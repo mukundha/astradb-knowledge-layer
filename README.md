@@ -64,7 +64,7 @@ python -m http.server 8000
 
 visit - `http://localhost:8000/d3.html` 
 
-You should see something like this,
+You should see something like this - Green dots are chunks, Purple dots are entities, edges show how they are linked.
 
 <img src="images/graph.png" width="500px">
 
