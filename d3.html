@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Force Directed Graph with Click Labels</title>
+  <style>
+    body, html { margin: 0; padding: 0; }
+    #graph-container {
+      width: 100%;
+      height: 100vh;
+      overflow: auto;
+      border: 1px solid #ccc;
+    }
+    svg { display: block; }
+    .node text {
+      pointer-events: none;
+      font: 10px sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="graph-container">
+    <!-- Increase SVG dimensions for scrolling if needed -->
+    <svg width="2000" height="2000"></svg>
+  </div>
+  
+  <!-- Include D3.js -->
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script>
+    const svg = d3.select("svg");
+    const width = +svg.attr("width");
+    const height = +svg.attr("height");
+
+    // Load data from the JSON file
+    d3.json("out.json").then(function(data) {
+      const nodes = [];
+      const links = [];
+      
+      // Map to track unique entity nodes
+      const entityMap = new Map();
+
+      data.forEach((d, i) => {
+        // Create a node for the chunk with the index label
+        const chunkNode = { id: "chunk_" + i, type: "chunk", label: i };
+        nodes.push(chunkNode);
+        
+        // Create or reuse entity nodes and create links
+        d.metadata.entities.forEach(entity => {
+          if (!entityMap.has(entity)) {
+            const entityNode = { id: "entity_" + entity, type: "entity", label: entity, showLabel: false };
+            entityMap.set(entity, entityNode);
+            nodes.push(entityNode);
+          }
+          links.push({
+            source: chunkNode.id,
+            target: entityMap.get(entity).id
+          });
+        });
+      });
+
+      // Set up the simulation
+      const simulation = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(links).id(d => d.id).distance(100))
+        .force("charge", d3.forceManyBody().strength(-200))
+        .force("center", d3.forceCenter(width / 2, height / 2));
+
+      // Draw links
+      const link = svg.append("g")
+        .attr("stroke", "#999")
+        .attr("stroke-opacity", 0.6)
+        .selectAll("line")
+        .data(links)
+        .enter().append("line")
+        .attr("stroke-width", 1.5);
+
+      // Draw nodes
+      const node = svg.append("g")
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 1.5)
+        .selectAll("circle")
+        .data(nodes)
+        .enter().append("circle")
+        .attr("r", 20)
+        .attr("fill", d => d.type === "chunk" ? "green" : "purple")
+        .call(drag(simulation));
+
+      // Create labels for both chunk and entity nodes.
+      // For chunk nodes, we display the index;
+      // for entity nodes, the label will appear only if d.showLabel is true.
+      const labels = svg.append("g")
+        .attr("class", "labels")
+        .selectAll("text")
+        .data(nodes)
+        .enter().append("text")
+        .attr("dy", -25) // position label above the node
+        .attr("text-anchor", "middle")
+        .text(d => d.type === "chunk" ? d.label : (d.type === "entity" && d.showLabel ? d.label : ""));
+
+      // Toggle label display on click for entity nodes
+      node.on("click", (event, d) => {
+        if (d.type === "entity") {
+          d.showLabel = !d.showLabel;  // toggle the label visibility
+          labels.filter(l => l.id === d.id)
+                .text(d.showLabel ? d.label : "");
+        }
+      });
+
+      simulation.on("tick", () => {
+        link
+          .attr("x1", d => d.source.x)
+          .attr("y1", d => d.source.y)
+          .attr("x2", d => d.target.x)
+          .attr("y2", d => d.target.y);
+
+        node
+          .attr("cx", d => d.x)
+          .attr("cy", d => d.y);
+
+        labels
+          .attr("x", d => d.x)
+          .attr("y", d => d.y - 25);
+      });
+
+      // Drag behavior
+      function drag(simulation) {
+        function dragstarted(event, d) {
+          if (!event.active) simulation.alphaTarget(0.3).restart();
+          d.fx = d.x;
+          d.fy = d.y;
+        }
+        function dragged(event, d) {
+          d.fx = event.x;
+          d.fy = event.y;
+        }
+        function dragended(event, d) {
+          if (!event.active) simulation.alphaTarget(0);
+          d.fx = null;
+          d.fy = null;
+        }
+        return d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended);
+      }
+    }).catch(function(error) {
+      console.error("Error loading the data:", error);
+    });
+  </script>
+</body>
+</html>
