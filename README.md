@@ -14,7 +14,7 @@ Do you have a complex PDF, with tables, graphics, mixed layout?
 
 Multi-Modal LLMs makes it really easy to parse and chunk these complex docs [[1]](#references)
 
-Try it out [[2]] (#references)
+Try it out [[2]](#references)
 ```
 python parse.py <filename>
 ```
