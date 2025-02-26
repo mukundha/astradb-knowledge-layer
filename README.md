@@ -1,6 +1,6 @@
 ### Knowledge Layer in AstraDB
 
-<img src="images/knowledge-layer.png">
+<img src="images/knowledge-layer.png" width="500px">
 
 - Knowledge layer is key for Accurate AI. 
 - Knowledge layer is more than Vector search.
@@ -45,7 +45,7 @@ This will produce a `out.json` in this format
 There are several ways to ingest the above json to AstraDB. If you prefer to use (langflow)[https://www.langflow.org/], I have created a component `custom_component.py` [[3]](#references)
 
 Copy paste the code to custom component. Flow should be very simple like this
-<img src="images/langflow.png">
+<img src="images/langflow.png" width="500px">
 
 That's it, That's all is needed! now you can do Semantic Searches with Vector, combine that with hybrid search, build a (Dynamic Graph)[https://github.com/datastax/graph-rag] at query time! 
 
@@ -65,7 +65,7 @@ python -m http.server 8000
 visit - `http://localhost:8000/d3.html` 
 
 You should see something like this,
-<img src="images/graph.png">
+<img src="images/graph.png" width="500px">
 
 Now, how can you use it for retrieval in RAG, check out `retriever.py`
 
