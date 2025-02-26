@@ -65,6 +65,7 @@ python -m http.server 8000
 visit - `http://localhost:8000/d3.html` 
 
 You should see something like this,
+
 <img src="images/graph.png" width="500px">
 
 Now, how can you use it for retrieval in RAG, check out `retriever.py`
