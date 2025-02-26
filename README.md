@@ -42,12 +42,12 @@ This will produce a `out.json` in this format
 
 ## Create Knowledge Layer
 
-There are several ways to ingest the above json to AstraDB. If you prefer to use (langflow)[https://www.langflow.org/], I have created a component `custom_component.py` [[3]](#references)
+There are several ways to ingest the above json to AstraDB. If you prefer to use [langflow](https://www.langflow.org/), I have created a component `custom_component.py` [[3]](#references)
 
 Copy paste the code to custom component. Flow should be very simple like this
 <img src="images/langflow.png" width="500px">
 
-That's it, That's all is needed! now you can do Semantic Searches with Vector, combine that with hybrid search, build a (Dynamic Graph)[https://github.com/datastax/graph-rag] at query time! 
+That's it, That's all is needed! now you can do Semantic Searches with Vector, combine that with hybrid search, build a [Dynamic Graph](https://github.com/datastax/graph-rag) at query time! 
 
 ## Vector 
 - Homework, checkout Agents in Langflow on how you can use them
